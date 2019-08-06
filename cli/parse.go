@@ -17,11 +17,11 @@ import (
 )
 
 var log = logging.Logger("cmds/cli")
-var msgStdinInfo = "ipfs: Reading from %s; send Ctrl-d to stop."
+var msgStdinInfo = "btfs: Reading from %s; send Ctrl-d to stop."
 
 func init() {
 	if osh.IsWindows() {
-		msgStdinInfo = "ipfs: Reading from %s; send Ctrl-z to stop."
+		msgStdinInfo = "btfs: Reading from %s; send Ctrl-z to stop."
 	}
 }
 
@@ -205,7 +205,7 @@ func parseArgs(req *cmds.Request, root *cmds.Command, stdin *os.File) error {
 	// and the last arg definition is not variadic (or there are no definitions), return an error
 	notVariadic := len(argDefs) == 0 || !argDefs[len(argDefs)-1].Variadic
 	if notVariadic && len(inputs) > len(argDefs) {
-		return printSuggestions(inputs, root)
+		return fmt.Errorf("expected %d argument(s), got %d", len(argDefs), len(inputs))
 	}
 
 	stringArgs := make([]string, 0, numInputs)

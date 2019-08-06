@@ -11,13 +11,39 @@ type ErrorType uint
 
 // ErrorTypes convey what category of error ocurred
 const (
-	ErrNormal         ErrorType = iota // general errors
-	ErrClient                          // error was caused by the client, (e.g. invalid CLI usage)
-	ErrImplementation                  // programmer error in the server
-	ErrNotFound                        // == HTTP 404
-	ErrFatal                           // abort instantly
-	// TODO: add more types of errors for better error-specific handling
+	// ErrNormal is a normal error. The command failed for some reason that's not a bug.
+	ErrNormal ErrorType = iota
+	// ErrClient means the client made an invalid request.
+	ErrClient
+	// ErrImplementation means there's a bug in the implementation.
+	ErrImplementation
+	// ErrRateLimited is returned when the operation has been rate-limited.
+	ErrRateLimited
+	// ErrForbidden is returned when the client doesn't have permission to
+	// perform the requested operation.
+	ErrForbidden
 )
+
+func (e ErrorType) Error() string {
+	return e.String()
+}
+
+func (e ErrorType) String() string {
+	switch e {
+	case ErrNormal:
+		return "command failed"
+	case ErrClient:
+		return "invalid argument"
+	case ErrImplementation:
+		return "internal error"
+	case ErrRateLimited:
+		return "rate limited"
+	case ErrForbidden:
+		return "request forbidden"
+	default:
+		return "unknown error code"
+	}
+}
 
 // Error is a struct for marshalling errors
 type Error struct {
@@ -35,6 +61,12 @@ func Errorf(code ErrorType, format string, args ...interface{}) Error {
 
 func (e Error) Error() string {
 	return e.Message
+}
+
+// Unwrap returns the base error (an ErrorType). Works with go 1.13 error
+// helpers.
+func (e Error) Unwrap() error {
+	return e.Code
 }
 
 func (e Error) MarshalJSON() ([]byte, error) {
