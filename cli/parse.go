@@ -17,11 +17,11 @@ import (
 )
 
 var log = logging.Logger("cmds/cli")
-var msgStdinInfo = "ipfs: Reading from %s; send Ctrl-d to stop."
+var msgStdinInfo = "btfs: Reading from %s; send Ctrl-d to stop."
 
 func init() {
 	if osh.IsWindows() {
-		msgStdinInfo = "ipfs: Reading from %s; send Ctrl-z to stop."
+		msgStdinInfo = "btfs: Reading from %s; send Ctrl-z to stop."
 	}
 }
 
