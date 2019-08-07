@@ -61,7 +61,7 @@ func NewClient(address string, opts ...ClientOpt) cmds.Executor {
 	c := &client{
 		serverAddress: address,
 		httpClient:    http.DefaultClient,
-		ua:            "go-ipfs-cmds/http",
+		ua:            "go-btfs-cmds/http",
 	}
 
 	for _, opt := range opts {

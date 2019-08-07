@@ -1,4 +1,4 @@
-module github.com/ipfs/go-ipfs-cmds
+module github.com/TRON-US/go-btfs-cmds
 
 require (
 	github.com/Kubuxu/go-os-helper v0.0.1
