@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ipfs/go-ipfs-cmds"
+	"github.com/TRON-US/go-btfs-cmds"
 )
 
 type writeCloser struct {

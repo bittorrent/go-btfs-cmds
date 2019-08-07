@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	cmds "github.com/ipfs/go-ipfs-cmds"
+	cmds "github.com/TRON-US/go-btfs-cmds"
 )
 
 func TestSynopsisGenerator(t *testing.T) {
