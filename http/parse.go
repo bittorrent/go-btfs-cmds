@@ -1,6 +1,7 @@
 package http
 
 import (
+	"context"
 	"encoding/base32"
 	"fmt"
 	"io/ioutil"
@@ -15,6 +16,21 @@ import (
 	"github.com/ipfs/go-ipfs-files"
 	logging "github.com/ipfs/go-log"
 )
+
+const (
+	contextKeyHTTPRequestRemoteAddr = "http-req-remote-addr"
+)
+
+// GetRequestRemoteAddr extracts the remote address value from an existing context
+func GetRequestRemoteAddr(ctx context.Context) (string, bool) {
+	if ctx == nil {
+		return "", false
+	}
+	if addr, ok := ctx.Value(contextKeyHTTPRequestRemoteAddr).(string); ok {
+		return addr, true
+	}
+	return "", false
+}
 
 // parseRequest parses the data in a http.Request and returns a command Request object
 func parseRequest(r *http.Request, root *cmds.Command) (*cmds.Request, error) {
@@ -137,6 +153,7 @@ func parseRequest(r *http.Request, root *cmds.Command) (*cmds.Request, error) {
 	}
 
 	ctx := logging.ContextWithLoggable(r.Context(), uuidLoggable())
+	ctx = context.WithValue(ctx, contextKeyHTTPRequestRemoteAddr, r.RemoteAddr)
 	req, err := cmds.NewRequest(ctx, pth, opts, args, f, root)
 	if err != nil {
 		return nil, err
