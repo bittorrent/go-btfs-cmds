@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ipfs/go-ipfs-cmds"
+	"github.com/TRON-US/go-btfs-cmds"
 
 	"github.com/ipfs/go-ipfs-files"
 	logging "github.com/ipfs/go-log"

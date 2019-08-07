@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ipfs/go-ipfs-cmds"
+	"github.com/TRON-US/go-btfs-cmds"
 )
 
 func TestErrors(t *testing.T) {

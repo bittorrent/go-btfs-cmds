@@ -4,12 +4,12 @@ import (
 	"context"
 	"os"
 
-	"github.com/ipfs/go-ipfs-cmds/examples/adder"
+	"github.com/TRON-US/go-btfs-cmds/examples/adder"
 
-	//cmds "github.com/ipfs/go-ipfs-cmds"
-	cmds "github.com/ipfs/go-ipfs-cmds"
-	cli "github.com/ipfs/go-ipfs-cmds/cli"
-	http "github.com/ipfs/go-ipfs-cmds/http"
+	//cmds "github.com/TRON-US/go-btfs-cmds"
+	cmds "github.com/TRON-US/go-btfs-cmds"
+	cli "github.com/TRON-US/go-btfs-cmds/cli"
+	http "github.com/TRON-US/go-btfs-cmds/http"
 )
 
 func main() {

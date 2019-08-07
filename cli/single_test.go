@@ -5,7 +5,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ipfs/go-ipfs-cmds"
+	"github.com/TRON-US/go-btfs-cmds"
 )
 
 func TestSingle(t *testing.T) {
