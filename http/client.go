@@ -93,7 +93,7 @@ func (c *client) Execute(req *cmds.Request, re cmds.ResponseEmitter, env cmds.En
 				// XXX: this runs the PreRun twice
 				return c.fallback.Execute(req, re, env)
 			}
-			err = fmt.Errorf("cannot connect to the api. Is the daemon running? To run as a standalone CLI command remove the api file in `$IPFS_PATH/api`")
+			err = fmt.Errorf("cannot connect to the api. Is the daemon running? To run as a standalone CLI command remove the api file in `$BTFS_PATH/api`")
 		}
 		return err
 	}
