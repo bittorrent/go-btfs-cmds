@@ -74,7 +74,18 @@ func (x *executor) Execute(req *Request, re ResponseEmitter, env Environment) er
 		close(errCh)
 	}
 
-	runCloseErr := re.CloseWithError(cmd.Run(req, re, env))
+	// Use timeout for Run() when available
+	runCh := make(chan error, 1)
+	go func() {
+		runCh <- cmd.Run(req, re, env)
+	}()
+	select {
+	case err = <-runCh:
+	case <-req.Context.Done():
+		err = req.Context.Err()
+	}
+
+	runCloseErr := re.CloseWithError(err)
 	postCloseErr := <-errCh
 	switch runCloseErr {
 	case ErrClosingClosedEmitter, nil:
