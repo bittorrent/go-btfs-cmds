@@ -94,6 +94,8 @@ func (c *client) Execute(req *cmds.Request, re cmds.ResponseEmitter, env cmds.En
 				return c.fallback.Execute(req, re, env)
 			}
 			err = fmt.Errorf("cannot connect to the api. Is the daemon running? To run as a standalone CLI command remove the api file in `$BTFS_PATH/api`")
+		} else {
+			err = parseTimeoutErr(err)
 		}
 		return err
 	}
@@ -250,4 +252,20 @@ func isConnRefused(err error) bool {
 	}
 
 	return netoperr.Op == "dial"
+}
+
+// parseTimeout checks and unwraps the actual timeout error
+// inside a (possible) url.Error.
+func parseTimeoutErr(err error) error {
+	// unwrap url errors from http calls
+	if urlerr, ok := err.(*url.Error); ok {
+		switch urlerr.Err {
+		case context.Canceled:
+			err = fmt.Errorf("canceled")
+		case context.DeadlineExceeded:
+			err = fmt.Errorf("timed out")
+		}
+	}
+
+	return err
 }
