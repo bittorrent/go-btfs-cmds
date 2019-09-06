@@ -22,6 +22,8 @@ const (
 	// ErrForbidden is returned when the client doesn't have permission to
 	// perform the requested operation.
 	ErrForbidden
+	// ErrorTimedOut is returned when the operation had timed out or was canceled.
+	ErrTimedOut
 )
 
 func (e ErrorType) Error() string {
@@ -40,6 +42,8 @@ func (e ErrorType) String() string {
 		return "rate limited"
 	case ErrForbidden:
 		return "request forbidden"
+	case ErrTimedOut:
+		return "timed out"
 	default:
 		return "unknown error code"
 	}

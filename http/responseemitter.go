@@ -1,6 +1,7 @@
 package http
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -174,6 +175,10 @@ func (re *responseEmitter) closeWithError(err error) error {
 	case io.EOF:
 		// not a real error
 		err = nil
+	case context.Canceled:
+		err = &cmds.Error{Message: "canceled", Code: cmds.ErrTimedOut}
+	case context.DeadlineExceeded:
+		err = &cmds.Error{Message: "timed out", Code: cmds.ErrTimedOut}
 	default:
 		// make sure this is *always* of type *cmds.Error
 		switch e := err.(type) {

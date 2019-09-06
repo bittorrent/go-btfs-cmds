@@ -12,6 +12,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/ipfs/go-ipfs-files"
 
@@ -44,6 +45,14 @@ type Command struct {
 	PostRun  PostRunMap
 	Encoders EncoderMap
 	Helptext HelpText
+
+	// RunTimeout is the default timeout for this particular command.
+	// The timeout limits the start of the Run function to the end of the
+	// response emittance.
+	// If unset (Duration = 0), there is no timeout.
+	// If the global CLI --timeout is set, this timeout is overridden by
+	// the --timeout value.
+	RunTimeout time.Duration
 
 	// External denotes that a command is actually an external binary.
 	// fewer checks and validations will be performed on such commands.
@@ -103,7 +112,18 @@ func (c *Command) call(req *Request, re ResponseEmitter, env Environment) error 
 		return err
 	}
 
-	return cmd.Run(req, re, env)
+	// Use timeout for Run() when available
+	runCh := make(chan error, 1)
+	go func() {
+		runCh <- cmd.Run(req, re, env)
+	}()
+	select {
+	case err = <-runCh:
+	case <-req.Context.Done():
+		err = req.Context.Err()
+	}
+
+	return err
 }
 
 // Resolve returns the subcommands at the given path

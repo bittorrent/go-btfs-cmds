@@ -138,6 +138,9 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		req.Context, cancel = context.WithTimeout(req.Context, timeout)
+	} else if req.Command.RunTimeout != 0 {
+		// Use command default timeout when available
+		req.Context, cancel = context.WithTimeout(req.Context, req.Command.RunTimeout)
 	} else {
 		req.Context, cancel = context.WithCancel(req.Context)
 	}
