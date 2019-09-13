@@ -3,11 +3,12 @@ package cli
 import (
 	"context"
 	"fmt"
-	"github.com/TRON-US/go-btfs-cmds"
 	"io"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/TRON-US/go-btfs-cmds"
 )
 
 // ExitError is the error used when a specific exit code needs to be returned.
