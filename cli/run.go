@@ -33,23 +33,6 @@ func Run(ctx context.Context, root *cmds.Command,
 
 	req, errParse := Parse(ctx, cmdline[1:], stdin, root)
 
-	// Handle the timeout up front.
-	var cancel func()
-	if timeoutStr, ok := req.Options[cmds.TimeoutOpt]; ok {
-		timeout, err := time.ParseDuration(timeoutStr.(string))
-		if err != nil {
-			printErr(err)
-			return err
-		}
-		req.Context, cancel = context.WithTimeout(req.Context, timeout)
-	} else if req.Command.RunTimeout != 0 {
-		// Use command default timeout when available
-		req.Context, cancel = context.WithTimeout(req.Context, req.Command.RunTimeout)
-	} else {
-		req.Context, cancel = context.WithCancel(req.Context)
-	}
-	defer cancel()
-
 	// this is a message to tell the user how to get the help text
 	printMetaHelp := func(w io.Writer) {
 		cmdPath := strings.Join(req.Path, " ")
@@ -104,6 +87,23 @@ func Run(ctx context.Context, root *cmds.Command,
 		printHelp(false, stdout)
 		return nil
 	}
+
+	// Handle the timeout up front.
+	var cancel func()
+	if timeoutStr, ok := req.Options[cmds.TimeoutOpt]; ok {
+		timeout, err := time.ParseDuration(timeoutStr.(string))
+		if err != nil {
+			printErr(err)
+			return err
+		}
+		req.Context, cancel = context.WithTimeout(req.Context, timeout)
+	} else if req.Command.RunTimeout != 0 {
+		// Use command default timeout when available
+		req.Context, cancel = context.WithTimeout(req.Context, req.Command.RunTimeout)
+	} else {
+		req.Context, cancel = context.WithCancel(req.Context)
+	}
+	defer cancel()
 
 	cmd := req.Command
 
