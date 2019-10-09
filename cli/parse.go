@@ -12,7 +12,7 @@ import (
 
 	osh "github.com/Kubuxu/go-os-helper"
 	"github.com/TRON-US/go-btfs-cmds"
-	"github.com/ipfs/go-ipfs-files"
+	"github.com/TRON-US/go-btfs-files"
 	logging "github.com/ipfs/go-log"
 )
 
