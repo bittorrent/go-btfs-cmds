@@ -12,7 +12,7 @@ import (
 	"testing"
 
 	cmds "github.com/TRON-US/go-btfs-cmds"
-	files "github.com/ipfs/go-ipfs-files"
+	files "github.com/TRON-US/go-btfs-files"
 )
 
 type VersionOutput struct {

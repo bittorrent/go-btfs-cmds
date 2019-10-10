@@ -14,7 +14,7 @@ import (
 
 	"github.com/TRON-US/go-btfs-cmds"
 
-	"github.com/ipfs/go-ipfs-files"
+	"github.com/TRON-US/go-btfs-files"
 )
 
 func newReaderPathFile(t *testing.T, path string, reader io.ReadCloser, stat os.FileInfo) files.File {
