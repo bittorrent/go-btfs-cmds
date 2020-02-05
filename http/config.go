@@ -19,6 +19,9 @@ type ServerConfig struct {
 	// Example: host:port/api/v0/add. Here the APIPath is /api/v0
 	APIPath string
 
+	// RedirectPaths contain the redirect prefixes to the same handler
+	RedirectPaths []string
+
 	// Headers is an optional map of headers that is written out.
 	Headers map[string][]string
 

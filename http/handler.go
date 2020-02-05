@@ -73,7 +73,7 @@ func NewHandler(env cmds.Environment, root *cmds.Command, cfg *ServerConfig) htt
 	}
 
 	if cfg.APIPath != "" {
-		h = newPrefixHandler(cfg.APIPath, h) // wrap with path prefix checker and trimmer
+		h = newPrefixHandler(cfg.APIPath, cfg.RedirectPaths, h) // wrap with path prefix checker and trimmer
 	}
 	h = c.Handler(h) // wrap with CORS handler
 
