@@ -107,7 +107,7 @@ func (re *responseEmitter) Emit(value interface{}) error {
 	var err error
 
 	// return immediately if this is a head request
-	if re.method == "HEAD" {
+	if re.method == http.MethodHead {
 		return nil
 	}
 

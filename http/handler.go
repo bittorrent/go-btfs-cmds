@@ -95,9 +95,35 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	if !allowOrigin(r, h.cfg) || !allowReferer(r, h.cfg) {
+	// First of all, check if we are allowed to handle the request method
+	// or we are configured not to.
+	//
+	// Always allow OPTIONS, POST
+	switch r.Method {
+	case http.MethodOptions:
+		// If we get here, this is a normal (non-preflight) request.
+		// The CORS library handles all other requests.
+
+		// Tell the user the allowed methods, and return.
+		setAllowedHeaders(w, h.cfg.AllowGet)
+		w.WriteHeader(http.StatusNoContent)
+		return
+	case http.MethodPost:
+	case http.MethodGet, http.MethodHead:
+		if h.cfg.AllowGet {
+			break
+		}
+		fallthrough
+	default:
+		setAllowedHeaders(w, h.cfg.AllowGet)
+		http.Error(w, "405 - Method Not Allowed", http.StatusMethodNotAllowed)
+		log.Warnf("The IPFS API does not support %s requests.", r.Method)
+		return
+	}
+
+	if !allowOrigin(r, h.cfg) || !allowReferer(r, h.cfg) || !allowUserAgent(r, h.cfg) {
 		http.Error(w, "403 - Forbidden", http.StatusForbidden)
-		log.Warningf("API blocked request to %s. (possible CSRF)", r.URL)
+		log.Warnf("API blocked request to %s. (possible CSRF)", r.URL)
 		return
 	}
 
@@ -130,6 +156,13 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// set user's headers first.
+	for k, v := range h.cfg.Headers {
+		if !skipAPIHeader(k) {
+			w.Header()[k] = v
+		}
+	}
+
 	// Handle the timeout up front.
 	var cancel func()
 	if timeoutStr, ok := req.Options[cmds.TimeoutOpt]; ok {
@@ -157,13 +190,6 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		defer done()
 	}
 
-	// set user's headers first.
-	for k, v := range h.cfg.Headers {
-		if !skipAPIHeader(k) {
-			w.Header()[k] = v
-		}
-	}
-
 	h.root.Call(req, re, h.env)
 }
 
@@ -172,4 +198,13 @@ func sanitizedErrStr(err error) string {
 	s = strings.Split(s, "\n")[0]
 	s = strings.Split(s, "\r")[0]
 	return s
+}
+
+func setAllowedHeaders(w http.ResponseWriter, allowGet bool) {
+	w.Header().Add("Allow", http.MethodHead)
+	w.Header().Add("Allow", http.MethodOptions)
+	w.Header().Add("Allow", http.MethodPost)
+	if allowGet {
+		w.Header().Add("Allow", http.MethodGet)
+	}
 }

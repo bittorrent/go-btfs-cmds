@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/TRON-US/go-btfs-cmds"
+	cmds "github.com/TRON-US/go-btfs-cmds"
 )
 
 func TestErrors(t *testing.T) {
@@ -116,7 +116,7 @@ func TestErrors(t *testing.T) {
 
 	mkTest := func(tc testcase) func(*testing.T) {
 		return func(t *testing.T) {
-			_, srv := getTestServer(t, nil) // handler_test:/^func getTestServer/
+			_, srv := getTestServer(t, nil, false) // handler_test:/^func getTestServer/
 			c := NewClient(srv.URL)
 			req, err := cmds.NewRequest(context.Background(), tc.path, tc.opts, nil, nil, cmdRoot)
 			if err != nil {
@@ -156,5 +156,56 @@ func TestErrors(t *testing.T) {
 
 	for i, tc := range tcs {
 		t.Run(fmt.Sprintf("%d-%s", i, strings.Join(tc.path, "/")), mkTest(tc))
+	}
+}
+
+func TestUnhandledMethod(t *testing.T) {
+	tc := httpTestCase{
+		Method:   "GET",
+		AllowGet: false,
+		Code:     http.StatusMethodNotAllowed,
+		ResHeaders: map[string]string{
+			"Allow": "POST, HEAD, OPTIONS",
+		},
+	}
+	tc.test(t)
+}
+
+func TestDisallowedUserAgents(t *testing.T) {
+	tcs := []httpTestCase{
+		{
+			// Block Mozilla* browsers that do not provide origins.
+			Method:   "POST",
+			AllowGet: false,
+			Code:     http.StatusForbidden,
+			ReqHeaders: map[string]string{
+				"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0",
+			},
+		},
+		{
+			// Do not block on GETs
+			Method:   "GET",
+			AllowGet: true,
+			Code:     http.StatusOK,
+			ReqHeaders: map[string]string{
+				"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0",
+			},
+		},
+		{
+			// Do not block a Mozilla* browser that provides an
+			// allowed Origin
+			Method:       "POST",
+			AllowGet:     false,
+			AllowOrigins: []string{"*"},
+			Origin:       "null",
+			Code:         http.StatusOK,
+			ReqHeaders: map[string]string{
+				"User-Agent": "Mozilla/5.0 (Linux; U; Android 4.1.1; en-gb; Build/KLP) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30",
+			},
+		},
+	}
+
+	for _, tc := range tcs {
+		tc.test(t)
 	}
 }
