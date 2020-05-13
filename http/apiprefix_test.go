@@ -58,7 +58,7 @@ func TestAPIPrefixHandler(t *testing.T) {
 			io.WriteString(w, "ok")
 		})
 
-		h = newPrefixHandler(tc.prefix, h)
+		h = newPrefixHandler(tc.prefix, nil, h)
 		h.ServeHTTP(w, r)
 
 		assert("called", tc.nextCalled, called)

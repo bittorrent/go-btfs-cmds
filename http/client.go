@@ -113,8 +113,6 @@ func (c *client) Execute(req *cmds.Request, re cmds.ResponseEmitter, env cmds.En
 				return c.fallback.Execute(req, re, env)
 			}
 			err = fmt.Errorf("cannot connect to the api. Is the daemon running? To run as a standalone CLI command remove the api file in `$BTFS_PATH/api`")
-		} else {
-			err = parseTimeoutErr(err)
 		}
 		return err
 	}
