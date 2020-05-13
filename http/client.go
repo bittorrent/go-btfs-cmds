@@ -30,14 +30,25 @@ type client struct {
 	fallback      cmds.Executor
 }
 
+// ClientOpt is an option that can be passed to the HTTP client constructor.
 type ClientOpt func(*client)
 
+// ClientWithUserAgent specifies the HTTP user agent for the client.
 func ClientWithUserAgent(ua string) ClientOpt {
 	return func(c *client) {
 		c.ua = ua
 	}
 }
 
+// ClientWithHTTPClient specifies a custom http.Client. Defaults to
+// http.DefaultClient.
+func ClientWithHTTPClient(hc *http.Client) ClientOpt {
+	return func(c *client) {
+		c.httpClient = hc
+	}
+}
+
+// ClientWithAPIPrefix specifies an API URL prefix.
 func ClientWithAPIPrefix(apiPrefix string) ClientOpt {
 	return func(c *client) {
 		c.apiPrefix = apiPrefix
@@ -53,6 +64,7 @@ func ClientWithFallback(exe cmds.Executor) ClientOpt {
 	}
 }
 
+// NewClient constructs a new HTTP-backed command executor.
 func NewClient(address string, opts ...ClientOpt) cmds.Executor {
 	if !strings.HasPrefix(address, "http://") {
 		address = "http://" + address
@@ -88,14 +100,19 @@ func (c *client) Execute(req *cmds.Request, re cmds.ResponseEmitter, env cmds.En
 
 	res, err := c.send(req)
 	if err != nil {
-		if isConnRefused(err) {
+		// Unwrap any URL errors. We don't really need to expose the
+		// underlying HTTP nonsense to the user.
+		if urlerr, ok := err.(*url.Error); ok {
+			err = urlerr.Err
+		}
+
+		if netoperr, ok := err.(*net.OpError); ok && netoperr.Op == "dial" {
+			// Connection refused.
 			if c.fallback != nil {
 				// XXX: this runs the PreRun twice
 				return c.fallback.Execute(req, re, env)
 			}
 			err = fmt.Errorf("cannot connect to the api. Is the daemon running? To run as a standalone CLI command remove the api file in `$BTFS_PATH/api`")
-		} else {
-			err = parseTimeoutErr(err)
 		}
 		return err
 	}
@@ -164,7 +181,7 @@ func (c *client) toHTTPRequest(req *cmds.Request) (*http.Request, error) {
 
 func (c *client) send(req *cmds.Request) (cmds.Response, error) {
 	if req.Context == nil {
-		log.Warningf("no context set in request")
+		log.Warnf("no context set in request")
 		req.Context = context.Background()
 	}
 
@@ -238,34 +255,4 @@ func getQuery(req *cmds.Request) (string, error) {
 	}
 
 	return query.Encode(), nil
-}
-
-func isConnRefused(err error) bool {
-	// unwrap url errors from http calls
-	if urlerr, ok := err.(*url.Error); ok {
-		err = urlerr.Err
-	}
-
-	netoperr, ok := err.(*net.OpError)
-	if !ok {
-		return false
-	}
-
-	return netoperr.Op == "dial"
-}
-
-// parseTimeout checks and unwraps the actual timeout error
-// inside a (possible) url.Error.
-func parseTimeoutErr(err error) error {
-	// unwrap url errors from http calls
-	if urlerr, ok := err.(*url.Error); ok {
-		switch urlerr.Err {
-		case context.Canceled:
-			err = fmt.Errorf("canceled")
-		case context.DeadlineExceeded:
-			err = fmt.Errorf("timed out")
-		}
-	}
-
-	return err
 }

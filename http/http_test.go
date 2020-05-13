@@ -12,9 +12,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/TRON-US/go-btfs-cmds"
+	cmds "github.com/TRON-US/go-btfs-cmds"
 
-	"github.com/TRON-US/go-btfs-files"
+	files "github.com/TRON-US/go-btfs-files"
 )
 
 func newReaderPathFile(t *testing.T, path string, reader io.ReadCloser, stat os.FileInfo) files.File {
@@ -88,7 +88,7 @@ func TestHTTP(t *testing.T) {
 
 	mkTest := func(tc testcase) func(*testing.T) {
 		return func(t *testing.T) {
-			env, srv := getTestServer(t, nil) // handler_test:/^func getTestServer/
+			env, srv := getTestServer(t, nil, true) // handler_test:/^func getTestServer/
 			c := NewClient(srv.URL)
 			req, err := cmds.NewRequest(context.Background(), tc.path, nil, nil, nil, cmdRoot)
 			if err != nil {
