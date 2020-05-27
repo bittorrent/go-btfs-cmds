@@ -186,10 +186,25 @@ func allowUserAgent(r *http.Request, cfg *ServerConfig) bool {
 	return false
 }
 
+var (
+	nonLocalList = []string{
+		"/wallet/init",
+		"/wallet/deposit",
+		"/wallet/withdraw",
+		"/wallet/password",
+		"/wallet/keys",
+		"/wallet/import",
+		"/config",
+		"/config/edit",
+		"/config/optin",
+		"/config/optout",
+	}
+)
+
 func allowNonLocal(r *http.Request, cfg *ServerConfig) bool {
 	ip := strings.Split(r.RemoteAddr, ":")[0]
 	result := false
-	for _, path := range []string{"/wallet/keys", "/wallet/password"} {
+	for _, path := range nonLocalList {
 		result = result || strings.HasSuffix(r.RequestURI, path)
 	}
 	return ip == "127.0.0.1" || !result
