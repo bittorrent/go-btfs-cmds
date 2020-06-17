@@ -185,3 +185,31 @@ func allowUserAgent(r *http.Request, cfg *ServerConfig) bool {
 	// should have included Origin or referer headers.
 	return false
 }
+
+var (
+	nonLocalList = []string{
+		"/wallet/init",
+		"/wallet/deposit",
+		"/wallet/withdraw",
+		"/wallet/password",
+		"/wallet/keys",
+		"/wallet/import",
+		"/wallet/transfer",
+		"/config",
+		"/config/edit",
+		"/config/optin",
+		"/config/optout",
+		"/path",
+		"/path/status",
+		"/path/capacity",
+	}
+)
+
+func allowNonLocal(r *http.Request, cfg *ServerConfig) bool {
+	ip := strings.Split(r.RemoteAddr, ":")[0]
+	result := false
+	for _, path := range nonLocalList {
+		result = result || strings.HasSuffix(r.RequestURI, path)
+	}
+	return ip == "127.0.0.1" || !result
+}
