@@ -194,10 +194,14 @@ var (
 		"/wallet/password",
 		"/wallet/keys",
 		"/wallet/import",
+		"/wallet/transfer",
 		"/config",
 		"/config/edit",
 		"/config/optin",
 		"/config/optout",
+		"/path",
+		"/path/status",
+		"/path/capacity",
 	}
 )
 
