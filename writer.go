@@ -105,6 +105,14 @@ type writerResponseEmitter struct {
 	closed  bool
 }
 
+func (re *writerResponseEmitter) RecordEvent(str string) {
+	return
+}
+
+func (re *writerResponseEmitter) ShowEventReport() string {
+	return ""
+}
+
 func (re *writerResponseEmitter) CloseWithError(err error) error {
 	if re.closed {
 		return ErrClosingClosedEmitter

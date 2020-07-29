@@ -1,4 +1,4 @@
-package http
+package cmds
 
 import (
 	"fmt"

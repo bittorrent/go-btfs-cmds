@@ -355,6 +355,14 @@ func (s *testEmitterWithError) Emit(value interface{}) error {
 	return nil
 }
 
+func (s *testEmitterWithError) RecordEvent(str string) {
+	return
+}
+
+func (s *testEmitterWithError) ShowEventReport() string {
+	return ""
+}
+
 func TestEmitterExpectError(t *testing.T) {
 	cmd := &Command{
 		Run: func(req *Request, re ResponseEmitter, env Environment) error {
