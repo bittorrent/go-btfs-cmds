@@ -49,6 +49,15 @@ type responseEmitter struct {
 	encType cmds.EncodingType
 	exit    int
 	closed  bool
+	te      cmds.TimeEvaluate
+}
+
+func (re *responseEmitter) RecordEvent(str string) {
+	re.te.RecordTime(str)
+}
+
+func (re *responseEmitter) ShowEventReport() string {
+	return re.te.Report()
 }
 
 func (re *responseEmitter) Type() cmds.PostRunType {
@@ -87,9 +96,9 @@ func (re *responseEmitter) CloseWithError(err error) error {
 		}
 		switch err {
 		case context.Canceled:
-			msg = "canceled"
+			msg = "canceled\n" + re.ShowEventReport()
 		case context.DeadlineExceeded:
-			msg = "timed out"
+			msg = "timed out\n" + re.ShowEventReport()
 		default:
 			msg = err.Error()
 		}

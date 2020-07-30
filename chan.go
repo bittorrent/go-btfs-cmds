@@ -115,6 +115,14 @@ func (r *chanResponse) Next() (interface{}, error) {
 
 type chanResponseEmitter chanResponse
 
+func (re *chanResponseEmitter) RecordEvent(str string) {
+	return
+}
+
+func (re *chanResponseEmitter) ShowEventReport() string {
+	return ""
+}
+
 func (re *chanResponseEmitter) Emit(v interface{}) error {
 	// channel emission iteration
 	if ch, ok := v.(chan interface{}); ok {

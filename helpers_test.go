@@ -27,6 +27,14 @@ func (s *testEmitter) Emit(value interface{}) error {
 	return nil
 }
 
+func (s *testEmitter) RecordEvent(str string) {
+	return
+}
+
+func (s *testEmitter) ShowEventReport() string {
+	return ""
+}
+
 // newTestEmitter fails the test if it receives an error.
 func newTestEmitter(t *testing.T) *testEmitter {
 	return (*testEmitter)(t)

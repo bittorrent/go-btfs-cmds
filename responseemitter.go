@@ -48,6 +48,12 @@ type ResponseEmitter interface {
 	// If value is io.Reader we just copy that to the connection
 	// other values are marshalled.
 	Emit(value interface{}) error
+
+	// Record the key event in the emit, used for profile the program
+	RecordEvent(str string)
+
+	//Show the event report for time used while execute the command
+	ShowEventReport() string
 }
 
 // Copy sends all values received on res to re. If res is closed, it closes re.
