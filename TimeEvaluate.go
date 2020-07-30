@@ -32,7 +32,7 @@ func (t *TimeEvaluate) Report() string {
 	}
 	t.RecordTime("ReportTime")
 
-	result := "Report(InNanoS):Start"
+	result := " Report(InNanoS):Start"
 	for i := 1; i < t.TmIndex; i++ {
 		costTime := t.TmVal[i].UnixNano() - t.TmVal[i-1].UnixNano()
 		result = fmt.Sprintf("%s-%s:%d", result, t.Event[i], costTime)
