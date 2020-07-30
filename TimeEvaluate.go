@@ -30,6 +30,7 @@ func (t *TimeEvaluate) Report() string {
 	if t.TmIndex == 0 {
 		return ""
 	}
+	t.RecordTime("ReportTime")
 
 	result := "Report(InNanoS):Start"
 	for i := 1; i < t.TmIndex; i++ {
