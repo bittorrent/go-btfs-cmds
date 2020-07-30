@@ -96,9 +96,9 @@ func (re *responseEmitter) CloseWithError(err error) error {
 		}
 		switch err {
 		case context.Canceled:
-			msg = "canceled" + re.ShowEventReport()
+			msg = "canceled\n" + re.ShowEventReport()
 		case context.DeadlineExceeded:
-			msg = "timed out" + re.ShowEventReport()
+			msg = "timed out\n" + re.ShowEventReport()
 		default:
 			msg = err.Error()
 		}

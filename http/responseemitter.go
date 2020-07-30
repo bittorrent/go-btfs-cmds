@@ -185,9 +185,9 @@ func (re *responseEmitter) closeWithError(err error) error {
 		// not a real error
 		err = nil
 	case context.Canceled:
-		err = &cmds.Error{Message: "canceled:" + re.te.Report(), Code: cmds.ErrTimedOut}
+		err = &cmds.Error{Message: "canceled\n" + re.te.Report(), Code: cmds.ErrTimedOut}
 	case context.DeadlineExceeded:
-		err = &cmds.Error{Message: "timed out:" + re.te.Report(), Code: cmds.ErrTimedOut}
+		err = &cmds.Error{Message: "timed out\n" + re.te.Report(), Code: cmds.ErrTimedOut}
 	default:
 		// make sure this is *always* of type *cmds.Error
 		switch e := err.(type) {

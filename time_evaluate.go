@@ -2,6 +2,7 @@ package cmds
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -32,12 +33,13 @@ func (t *TimeEvaluate) Report() string {
 	}
 	t.RecordTime("ReportTime")
 
-	result := " Report(InNanoS):Start"
+	var b strings.Builder
+	b.WriteString(" Report(InNanoS):Start")
 	for i := 1; i < t.TmIndex; i++ {
 		costTime := t.TmVal[i].UnixNano() - t.TmVal[i-1].UnixNano()
-		result = fmt.Sprintf("%s-%s:%d", result, t.Event[i], costTime)
+		fmt.Fprintf(&b, "%s:%d", t.Event[i], costTime)
 	}
 	tCo := t.TmVal[t.TmIndex-1].Unix() - t.TmVal[0].Unix()
-	result = fmt.Sprintf("%s-Sum:%ds", result, tCo)
-	return result
+	fmt.Fprintf(&b, "Sum:%ds", tCo)
+	return b.String()
 }
