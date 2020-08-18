@@ -192,7 +192,7 @@ func allowNonLocal(r *http.Request, cfg *ServerConfig) bool {
 	ip := strings.Split(r.RemoteAddr, ":")[0]
 	result := false
 	for _, path := range nonLocalList {
-		result = result || strings.HasSuffix(r.RequestURI, path)
+		result = result || strings.Contains(r.RequestURI, path)
 	}
 	return ip == "127.0.0.1" || !result
 }
