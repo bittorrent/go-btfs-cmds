@@ -19,6 +19,7 @@ import (
 	logging "github.com/ipfs/go-log"
 )
 
+// DefaultOutputEncoding defines the default API output encoding.
 const DefaultOutputEncoding = JSON
 
 var log = logging.Logger("cmds")
@@ -102,13 +103,13 @@ type Command struct {
 
 var (
 	// ErrNotCallable signals a command that cannot be called.
-	ErrNotCallable = ClientError("This command can't be called directly. Try one of its subcommands.")
+	ErrNotCallable = ClientError("this command cannot be called directly; try one of its subcommands.")
 
 	// ErrNoFormatter signals that the command can not be formatted.
-	ErrNoFormatter = ClientError("This command cannot be formatted to plain text")
+	ErrNoFormatter = ClientError("this command cannot be formatted to plain text")
 
 	// ErrIncorrectType signales that the commands returned a value with unexpected type.
-	ErrIncorrectType = errors.New("The command returned a value with a different type than expected")
+	ErrIncorrectType = errors.New("the command returned a value with a different type than expected")
 )
 
 // Call invokes the command for the given Request

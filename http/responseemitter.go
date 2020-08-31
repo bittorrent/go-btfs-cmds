@@ -1,7 +1,6 @@
 package http
 
 import (
-	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -13,10 +12,10 @@ import (
 )
 
 var (
-	HeadRequest = fmt.Errorf("HEAD request")
-
+	// AllowedExposedHeadersArr defines the default Access-Control-Expose-Headers.
 	AllowedExposedHeadersArr = []string{streamHeader, channelHeader, extraContentLengthHeader}
-	AllowedExposedHeaders    = strings.Join(AllowedExposedHeadersArr, ", ")
+	// AllowedExposedHeaders is the list of defaults Access-Control-Expose-Headers separated by comma.
+	AllowedExposedHeaders = strings.Join(AllowedExposedHeadersArr, ", ")
 
 	mimeTypes = map[cmds.EncodingType]string{
 		cmds.Protobuf: "application/protobuf",
@@ -26,7 +25,7 @@ var (
 	}
 )
 
-// NewResponeEmitter returns a new ResponseEmitter.
+// NewResponseEmitter returns a new ResponseEmitter.
 func NewResponseEmitter(w http.ResponseWriter, method string, req *cmds.Request, opts ...ResponseEmitterOption) (ResponseEmitter, error) {
 	encType, enc, err := cmds.GetEncoder(req, w, cmds.JSON)
 	if err != nil {
@@ -62,6 +61,8 @@ func withRequestBodyEOFChan(ch <-chan struct{}) ResponseEmitterOption {
 	}
 }
 
+// ResponseEmitter interface defines the components that can care of sending
+// the response to HTTP Requests.
 type ResponseEmitter interface {
 	cmds.ResponseEmitter
 	http.Flusher
@@ -76,7 +77,6 @@ type responseEmitter struct {
 
 	l      sync.Mutex
 	length uint64
-	err    *cmds.Error
 
 	bodyEOFChan <-chan struct{}
 
@@ -84,15 +84,6 @@ type responseEmitter struct {
 	closed    bool
 	once      sync.Once
 	method    string
-	te        cmds.TimeEvaluate
-}
-
-func (re *responseEmitter) RecordEvent(str string) {
-	re.te.RecordTime(str)
-}
-
-func (re *responseEmitter) ShowEventReport() string {
-	return re.te.Report()
 }
 
 func (re *responseEmitter) Emit(value interface{}) error {
@@ -184,10 +175,6 @@ func (re *responseEmitter) closeWithError(err error) error {
 	case io.EOF:
 		// not a real error
 		err = nil
-	case context.Canceled:
-		err = &cmds.Error{Message: "canceled\n" + re.te.Report(), Code: cmds.ErrTimedOut}
-	case context.DeadlineExceeded:
-		err = &cmds.Error{Message: "timed out\n" + re.te.Report(), Code: cmds.ErrTimedOut}
 	default:
 		// make sure this is *always* of type *cmds.Error
 		switch e := err.(type) {
@@ -196,7 +183,7 @@ func (re *responseEmitter) closeWithError(err error) error {
 		case *cmds.Error:
 		case nil:
 		default:
-			err = &cmds.Error{Message: err.Error() + re.te.Report(), Code: cmds.ErrNormal}
+			err = &cmds.Error{Message: err.Error(), Code: cmds.ErrNormal}
 		}
 	}
 
@@ -327,10 +314,6 @@ func (re *responseEmitter) doPreamble(value interface{}) {
 	h.Set(contentTypeHeader, mime)
 
 	re.w.WriteHeader(http.StatusOK)
-}
-
-type responseWriterer interface {
-	Lower() http.ResponseWriter
 }
 
 func flushCopy(w io.Writer, r io.Reader) error {

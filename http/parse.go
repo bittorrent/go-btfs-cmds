@@ -11,9 +11,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/TRON-US/go-btfs-cmds"
+	cmds "github.com/TRON-US/go-btfs-cmds"
 
-	"github.com/TRON-US/go-btfs-files"
+	files "github.com/TRON-US/go-btfs-files"
 	logging "github.com/ipfs/go-log"
 )
 
@@ -149,11 +149,10 @@ func parseRequest(r *http.Request, root *cmds.Command) (*cmds.Request, error) {
 
 	// if there is a required filearg, error if no files were provided
 	if len(requiredFile) > 0 && f == nil {
-		return nil, fmt.Errorf("File argument '%s' is required", requiredFile)
+		return nil, fmt.Errorf("file argument '%s' is required", requiredFile)
 	}
 
 	ctx := logging.ContextWithLoggable(r.Context(), uuidLoggable())
-	ctx = context.WithValue(ctx, contextKeyHTTPRequestRemoteAddr, r.RemoteAddr)
 	req, err := cmds.NewRequest(ctx, pth, opts, args, f, root)
 	if err != nil {
 		return nil, err
