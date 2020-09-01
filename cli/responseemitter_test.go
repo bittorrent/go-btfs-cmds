@@ -8,12 +8,6 @@ import (
 	"github.com/TRON-US/go-btfs-cmds"
 )
 
-type writeCloser struct {
-	*bytes.Buffer
-}
-
-func (wc writeCloser) Close() error { return nil }
-
 type tcCloseWithError struct {
 	stdout, stderr     *bytes.Buffer
 	exStdout, exStderr string
