@@ -153,6 +153,7 @@ func parseRequest(r *http.Request, root *cmds.Command) (*cmds.Request, error) {
 	}
 
 	ctx := logging.ContextWithLoggable(r.Context(), uuidLoggable())
+	ctx = context.WithValue(ctx, contextKeyHTTPRequestRemoteAddr, r.RemoteAddr)
 	req, err := cmds.NewRequest(ctx, pth, opts, args, f, root)
 	if err != nil {
 		return nil, err

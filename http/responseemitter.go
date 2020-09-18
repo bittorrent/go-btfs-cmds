@@ -84,6 +84,7 @@ type responseEmitter struct {
 	closed    bool
 	once      sync.Once
 	method    string
+	te        cmds.TimeEvaluate
 }
 
 func (re *responseEmitter) Emit(value interface{}) error {
@@ -141,6 +142,14 @@ func (re *responseEmitter) Emit(value interface{}) error {
 	}
 
 	return err
+}
+
+func (re *responseEmitter) RecordEvent(str string) {
+	re.te.RecordTime(str)
+}
+
+func (re *responseEmitter) ShowEventReport() string {
+	return re.te.Report()
 }
 
 func (re *responseEmitter) SetLength(l uint64) {
