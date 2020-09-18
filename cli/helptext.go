@@ -10,6 +10,7 @@ import (
 	"text/template"
 
 	cmds "github.com/TRON-US/go-btfs-cmds"
+
 	"golang.org/x/crypto/ssh/terminal"
 )
 
