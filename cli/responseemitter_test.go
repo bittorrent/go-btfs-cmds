@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/TRON-US/go-btfs-cmds"
+	cmds "github.com/TRON-US/go-btfs-cmds"
 )
 
 type tcCloseWithError struct {
