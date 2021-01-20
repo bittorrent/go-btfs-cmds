@@ -6,8 +6,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/tron-us/go-common/v2/network"
-
 	cors "github.com/rs/cors"
 )
 
@@ -189,21 +187,4 @@ func allowUserAgent(r *http.Request, cfg *ServerConfig) bool {
 	}
 
 	return !strings.HasPrefix(ua, "Mozilla")
-}
-
-var nonLocalList []string
-
-func allowNonLocal(r *http.Request, cfg *ServerConfig) bool {
-	if isLocal, err := network.IsLocalIp(strings.Split(r.RemoteAddr, ":")[0]); err == nil && isLocal {
-		return true
-	}
-	result := false
-	for _, path := range nonLocalList {
-		result = result || strings.Contains(r.RequestURI, path)
-	}
-	return !result
-}
-
-func RegisterNonLocalCmds(cmd ...string) {
-	nonLocalList = append(nonLocalList, cmd...)
 }
