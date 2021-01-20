@@ -33,10 +33,12 @@ func GetRequestRemoteAddr(ctx context.Context) (string, bool) {
 	return "", false
 }
 
-func disalowRemote(c *cmds.Command) bool {
+var disallowRemote = func() func(c *cmds.Command) bool {
 	b := strings.ToLower(os.Getenv("DISABLED_NO_REMOTE")) == "true"
-	return !b && c.NoRemote
-}
+	return func(c *cmds.Command) bool {
+		return !b && c.NoRemote
+	}
+}()
 
 // parseRequest parses the data in a http.Request and returns a command Request object
 func parseRequest(r *http.Request, root *cmds.Command) (*cmds.Request, error) {
@@ -57,7 +59,7 @@ func parseRequest(r *http.Request, root *cmds.Command) (*cmds.Request, error) {
 	}
 
 	for _, c := range cmdPath {
-		if disalowRemote(c) {
+		if disallowRemote(c) {
 			return nil, ErrNotFound
 		}
 	}
@@ -78,7 +80,7 @@ func parseRequest(r *http.Request, root *cmds.Command) (*cmds.Request, error) {
 		cmd = sub
 	}
 
-	if disalowRemote(cmd) {
+	if disallowRemote(cmd) {
 		return nil, ErrNotFound
 	}
 
