@@ -20,7 +20,14 @@ import (
 
 const (
 	contextKeyHTTPRequestRemoteAddr = "http-req-remote-addr"
+	DomainKey                       = "domain"
 )
+
+var domainWhitelist []string
+
+func AddDomainWhiteList(domain string) {
+	domainWhitelist = append(domainWhitelist, domain)
+}
 
 // GetRequestRemoteAddr extracts the remote address value from an existing context
 func GetRequestRemoteAddr(ctx context.Context) (string, bool) {
@@ -34,9 +41,18 @@ func GetRequestRemoteAddr(ctx context.Context) (string, bool) {
 }
 
 var disallowRemote = func() func(c *cmds.Command) bool {
-	b := strings.ToLower(os.Getenv("DISABLED_NO_REMOTE")) == "true"
+	enabled := strings.ToLower(os.Getenv("ENABLE_WALLET_REMOTE")) == "true"
 	return func(c *cmds.Command) bool {
-		return !b && c.NoRemote
+		inWhiteList := false
+		if domain, b := c.Extra.GetValue(DomainKey); b {
+			for _, d := range domainWhitelist {
+				if d == domain {
+					inWhiteList = true
+					break
+				}
+			}
+		}
+		return (!enabled || c.NoRemote) && !inWhiteList
 	}
 }()
 
