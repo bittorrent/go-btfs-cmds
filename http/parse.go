@@ -40,7 +40,7 @@ func GetRequestRemoteAddr(ctx context.Context) (string, bool) {
 	return "", false
 }
 
-var Accessible = func() func(c *cmds.Command) bool {
+var RemoteAccessible = func() func(c *cmds.Command) bool {
 	enabled := strings.ToLower(os.Getenv("ENABLE_WALLET_REMOTE")) == "true"
 	return func(c *cmds.Command) bool {
 		inWhiteList := false
@@ -75,7 +75,7 @@ func parseRequest(r *http.Request, root *cmds.Command) (*cmds.Request, error) {
 	}
 
 	for _, c := range cmdPath {
-		if !Accessible(c) {
+		if !RemoteAccessible(c) {
 			return nil, ErrNotFound
 		}
 	}
@@ -96,7 +96,7 @@ func parseRequest(r *http.Request, root *cmds.Command) (*cmds.Request, error) {
 		cmd = sub
 	}
 
-	if !Accessible(cmd) {
+	if !RemoteAccessible(cmd) {
 		return nil, ErrNotFound
 	}
 
