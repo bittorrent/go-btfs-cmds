@@ -14,6 +14,8 @@ import (
 
 	cmds "github.com/TRON-US/go-btfs-cmds"
 
+	"github.com/tron-us/go-common/v2/network"
+
 	files "github.com/TRON-US/go-btfs-files"
 	logging "github.com/ipfs/go-log"
 )
@@ -40,9 +42,9 @@ func GetRequestRemoteAddr(ctx context.Context) (string, bool) {
 	return "", false
 }
 
-var RemoteAccessible = func() func(c *cmds.Command) bool {
+var RemoteAccessible = func() func(c *cmds.Command, addr string) bool {
 	enabled := strings.ToLower(os.Getenv("ENABLE_WALLET_REMOTE")) == "true"
-	return func(c *cmds.Command) bool {
+	return func(c *cmds.Command, addr string) bool {
 		inWhiteList := false
 		if domain, b := c.Extra.GetValue(DomainKey); b {
 			for _, d := range domainWhitelist {
@@ -52,7 +54,8 @@ var RemoteAccessible = func() func(c *cmds.Command) bool {
 				}
 			}
 		}
-		return !c.NoRemote || (enabled && inWhiteList)
+		isLocal, err := network.IsLocalIp(strings.Split(addr, ":")[0])
+		return (err == nil && isLocal) || !c.NoRemote || (enabled && inWhiteList)
 	}
 }()
 
@@ -75,7 +78,7 @@ func parseRequest(r *http.Request, root *cmds.Command) (*cmds.Request, error) {
 	}
 
 	for _, c := range cmdPath {
-		if !RemoteAccessible(c) {
+		if !RemoteAccessible(c, r.RemoteAddr) {
 			return nil, ErrNotFound
 		}
 	}
@@ -96,7 +99,7 @@ func parseRequest(r *http.Request, root *cmds.Command) (*cmds.Request, error) {
 		cmd = sub
 	}
 
-	if !RemoteAccessible(cmd) {
+	if !RemoteAccessible(cmd, r.RemoteAddr) {
 		return nil, ErrNotFound
 	}
 
