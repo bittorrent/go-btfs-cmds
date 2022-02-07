@@ -182,7 +182,15 @@ func (c *Command) call(req *Request, re ResponseEmitter, env Environment) error 
 	// Use timeout for Run() when available
 	runCh := make(chan error, 1)
 	go func() {
-		runCh <- cmd.Run(req, re, env)
+		var err error
+		defer func() {
+			if ok := recover(); ok != nil {
+				runCh <- fmt.Errorf("panic recovered: %+v", ok)
+			} else {
+				runCh <- err
+			}
+		}()
+		err = cmd.Run(req, re, env)
 	}()
 	select {
 	case err = <-runCh:
