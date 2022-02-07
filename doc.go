@@ -87,7 +87,7 @@
 
 	To get a better idea of what's going on, take a look at the
 	examples at
-	https://github.com/TRON-US/go-btfs-cmds/tree/master/examples.
+	https://github.com/bittorrent/go-btfs-cmds/tree/master/examples.
 
 */
 package cmds

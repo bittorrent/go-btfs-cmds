@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/TRON-US/go-btfs-cmds"
+	"github.com/bittorrent/go-btfs-cmds"
 )
 
 // ExitError is the error used when a specific exit code needs to be returned.

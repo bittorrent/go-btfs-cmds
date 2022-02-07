@@ -1,4 +1,4 @@
-module github.com/TRON-US/go-btfs-cmds
+module github.com/bittorrent/go-btfs-cmds
 
 go 1.14
 
