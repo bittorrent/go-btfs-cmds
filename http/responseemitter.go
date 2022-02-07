@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 
-	cmds "github.com/TRON-US/go-btfs-cmds"
+	cmds "github.com/bittorrent/go-btfs-cmds"
 )
 
 var (

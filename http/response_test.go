@@ -3,7 +3,7 @@ package http
 import (
 	"testing"
 
-	"github.com/TRON-US/go-btfs-cmds"
+	"github.com/bittorrent/go-btfs-cmds"
 )
 
 type testResponseType struct {

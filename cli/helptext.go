@@ -9,7 +9,7 @@ import (
 	"strings"
 	"text/template"
 
-	cmds "github.com/TRON-US/go-btfs-cmds"
+	cmds "github.com/bittorrent/go-btfs-cmds"
 
 	"golang.org/x/crypto/ssh/terminal"
 )

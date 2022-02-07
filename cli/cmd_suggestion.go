@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	cmds "github.com/TRON-US/go-btfs-cmds"
+	cmds "github.com/bittorrent/go-btfs-cmds"
 	levenshtein "github.com/texttheater/golang-levenshtein/levenshtein"
 )
 
