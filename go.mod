@@ -1,9 +1,10 @@
-module github.com/TRON-US/go-btfs-cmds
+module github.com/bittorrent/go-btfs-cmds
 
 go 1.14
 
 require (
 	github.com/Kubuxu/go-os-helper v0.0.1
+	github.com/bittorrent/go-btfs-cmds v0.2.13
 	github.com/TRON-US/go-btfs-files v0.2.0
 	github.com/ipfs/go-log v1.0.4
 	github.com/rs/cors v1.7.0
