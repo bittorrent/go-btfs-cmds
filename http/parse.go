@@ -14,9 +14,9 @@ import (
 
 	cmds "github.com/bittorrent/go-btfs-cmds"
 
-	"github.com/tron-us/go-common/v2/network"
+	"github.com/bittorrent/go-common/v2/network"
 
-	files "github.com/TRON-US/go-btfs-files"
+	files "github.com/bittorrent/go-btfs-files"
 	logging "github.com/ipfs/go-log"
 )
 

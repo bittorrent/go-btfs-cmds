@@ -11,7 +11,7 @@ import (
 
 	"github.com/bittorrent/go-btfs-cmds"
 
-	"github.com/TRON-US/go-btfs-files"
+	"github.com/bittorrent/go-btfs-files"
 )
 
 const (

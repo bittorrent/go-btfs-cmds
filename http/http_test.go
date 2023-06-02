@@ -14,7 +14,7 @@ import (
 
 	cmds "github.com/bittorrent/go-btfs-cmds"
 
-	files "github.com/TRON-US/go-btfs-files"
+	files "github.com/bittorrent/go-btfs-files"
 )
 
 func newReaderPathFile(t *testing.T, path string, reader io.ReadCloser, stat os.FileInfo) files.File {
