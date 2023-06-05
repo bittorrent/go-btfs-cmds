@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	files "github.com/TRON-US/go-btfs-files"
+	files "github.com/bittorrent/go-btfs-files"
 
 	logging "github.com/ipfs/go-log"
 )

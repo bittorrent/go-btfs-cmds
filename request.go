@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"reflect"
 
-	files "github.com/TRON-US/go-btfs-files"
+	files "github.com/bittorrent/go-btfs-files"
 )
 
 // Request represents a call to a command from a consumer

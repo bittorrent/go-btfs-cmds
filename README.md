@@ -6,7 +6,7 @@ cmds offers tools for describing and calling commands both locally and remotely,
 
 ## Documentation
 
-https://pkg.go.dev/github.com/TRON-US/go-btfs-cmds
+https://pkg.go.dev/github.com/bittorrent/go-btfs-cmds
 
 ## Contribute
 
@@ -14,5 +14,5 @@ Feel free to join in. All welcome.
 
 ## License
 
-MIT © TRON-US.
+MIT © Bittorrent.
 

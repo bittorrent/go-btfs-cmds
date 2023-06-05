@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/TRON-US/go-btfs-cmds"
+	"github.com/bittorrent/go-btfs-cmds"
 )
 
 var (

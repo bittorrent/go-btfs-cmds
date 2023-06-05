@@ -3,9 +3,9 @@ package main
 import (
 	nethttp "net/http"
 
-	"github.com/TRON-US/go-btfs-cmds/examples/adder"
+	"github.com/bittorrent/go-btfs-cmds/examples/adder"
 
-	http "github.com/TRON-US/go-btfs-cmds/http"
+	http "github.com/bittorrent/go-btfs-cmds/http"
 )
 
 type env struct{}

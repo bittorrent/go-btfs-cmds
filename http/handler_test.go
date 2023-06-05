@@ -11,8 +11,8 @@ import (
 
 	"testing"
 
-	cmds "github.com/TRON-US/go-btfs-cmds"
-	files "github.com/TRON-US/go-btfs-files"
+	cmds "github.com/bittorrent/go-btfs-cmds"
+	files "github.com/bittorrent/go-btfs-files"
 )
 
 type VersionOutput struct {
